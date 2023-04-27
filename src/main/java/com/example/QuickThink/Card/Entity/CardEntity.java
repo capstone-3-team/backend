@@ -2,11 +2,9 @@ package com.example.QuickThink.Card.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 
@@ -31,10 +29,10 @@ public class CardEntity {
     private Long userId;
 
     @Column(nullable = false)
-    private Date writtenDate;
+    private LocalDateTime writtenDate;
 
     @Column(nullable = false)
-    private Date latestReviewDate;
+    private LocalDateTime latestReviewDate;
 
     @Column(nullable = false)
     private Long reviewCount;
