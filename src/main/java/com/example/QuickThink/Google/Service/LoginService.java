@@ -3,6 +3,7 @@ package com.example.QuickThink.Google.Service;
 
 import com.example.QuickThink.Google.Dto.LoginResponseDto;
 import com.example.QuickThink.Google.Entity.UserEntity;
+import com.example.QuickThink.Google.Exception.InvalidToken;
 import com.example.QuickThink.Google.Repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
@@ -148,6 +149,21 @@ public class LoginService {
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * 해당 토큰을 가진 유저를 가져옵니다.
+     * 만약 없다면 401 UNAUTHORIZED 에러를 리턴합니다.
+     * @param accessToken
+     * @return
+     */
+    public UserEntity getUserByToken(String accessToken) {
+        UserEntity user = userRepository.findByAccessToken(accessToken);
+        if(user == null) {
+            throw new InvalidToken();
+        } else {
+            return user;
         }
     }
 }

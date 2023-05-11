@@ -14,4 +14,9 @@ public class GoogleException {
     public ResponseEntity<String> redirectException(InvalidRedirect err) {
         return new ResponseEntity<>(err.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidToken.class)
+    public ResponseEntity<String> invalidToken(InvalidToken err) {
+        return new ResponseEntity<>(err.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 }
