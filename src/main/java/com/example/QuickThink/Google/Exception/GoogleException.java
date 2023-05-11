@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * 로그인 관련된 Exception들을 Handling
+ */
 @ControllerAdvice
 public class GoogleException {
     @ExceptionHandler(InvalidRedirect.class)

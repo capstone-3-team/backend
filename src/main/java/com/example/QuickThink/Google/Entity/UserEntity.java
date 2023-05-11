@@ -3,6 +3,9 @@ package com.example.QuickThink.Google.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * 유저 엔티티
+ */
 @Entity
 @Table(name = "user")
 @Getter

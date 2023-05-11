@@ -38,6 +38,10 @@ public class LoginService {
         tokenUri = env.getProperty("google.token-uri");
     }
 
+    /**
+     * 구글 로그인 주소를 만들어 리턴합니다.
+     * @return
+     */
     public String googleRedirect() {
         Map<String, Object> params = new HashMap<>();
         params.put("scope", "https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile");
@@ -101,6 +105,14 @@ public class LoginService {
         return loginResponseDto;
     }
 
+    /**
+     * 이전에 로그인 한 적이 있는지 여부를 파악해 새로운 유저로 DB에 넣을지, 유저 데이터만 최신으로 바꾸어 줄지를 결정합니다.
+     * @param googleName
+     * @param googleId
+     * @param profilePicture
+     * @param accessToken
+     * @return
+     */
     @Transactional
     public Boolean registration(String googleName, String googleId, String profilePicture, String accessToken) {
         // 유저를 가져온 후 있으면 갱신, 없으면 추가합니다.
@@ -124,6 +136,12 @@ public class LoginService {
         }
     }
 
+    /**
+     * ID 와 토큰을 통해 토큰의 유효성을 검증합니다.
+     * @param accessToken
+     * @param googleId
+     * @return
+     */
     @Transactional
     public Boolean tokenValidation(String accessToken, String googleId) {
         if(userRepository.findByGoogleIdAndAccessToken(googleId, accessToken) == null) {
