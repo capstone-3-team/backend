@@ -10,6 +10,4 @@ public class QuickThinkApplication {
 		SpringApplication.run(QuickThinkApplication.class, args);
 	}
 
-
-
 }
