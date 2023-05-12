@@ -4,6 +4,7 @@ package com.example.QuickThink.Google.Service;
 import com.example.QuickThink.Google.Dto.LoginResponseDto;
 import com.example.QuickThink.Google.Entity.UserEntity;
 import com.example.QuickThink.Google.Exception.InvalidToken;
+import com.example.QuickThink.Google.Exception.NotFoundException;
 import com.example.QuickThink.Google.Repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
@@ -162,6 +163,21 @@ public class LoginService {
         UserEntity user = userRepository.findByAccessToken(accessToken);
         if(user == null) {
             throw new InvalidToken();
+        } else {
+            return user;
+        }
+    }
+
+    /**
+     * 해당 구글아이디를 가진 유저를 가져옵니다.
+     * 만약 없다면 404 NOT_FOUND 에러를 리턴합니다.
+     * @param googleId
+     * @return
+     */
+    public UserEntity getUserByGoogleId(String googleId) {
+        UserEntity user = userRepository.findByGoogleId(googleId);
+        if(user == null) {
+            throw new NotFoundException();
         } else {
             return user;
         }

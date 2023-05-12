@@ -3,22 +3,22 @@ package com.example.QuickThink.Google.Controller;
 import com.example.QuickThink.Google.Dto.LoginResponseDto;
 import com.example.QuickThink.Google.Dto.TokenValidationDto;
 import com.example.QuickThink.Google.Exception.InvalidRedirect;
+import com.example.QuickThink.Google.Service.AccountService;
 import com.example.QuickThink.Google.Service.LoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 public class GoogleController {
     LoginService loginService;
+    AccountService accountService;
 
-    public GoogleController(LoginService loginService) {
+    public GoogleController(LoginService loginService, AccountService accountService) {
         this.loginService = loginService;
+        this.accountService = accountService;
     }
 
     //리다이렉트
@@ -44,5 +44,19 @@ public class GoogleController {
     public ResponseEntity<TokenValidationDto> tokenValidation(@RequestParam String accessToken, @RequestParam String googleId) {
         Boolean validationResult = loginService.tokenValidation(accessToken, googleId);
         return new ResponseEntity<>(new TokenValidationDto(validationResult), HttpStatus.OK);
+    }
+
+    // 프로필 텍스트 내용 가져오기
+    @GetMapping("/profile")
+    public ResponseEntity<String> getProfileText(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId) {
+        String profileText = accountService.getProfileText(accessToken, googleId);
+        return new ResponseEntity<>(profileText, HttpStatus.OK);
+    }
+
+    // 프로필 텍스트 내용 수정하기
+    @PostMapping("/profile")
+    public ResponseEntity<HttpStatus> changeProfileText(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId, @RequestBody String profileText) {
+        accountService.changeProfileText(accessToken, googleId, profileText);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -27,6 +27,9 @@ public class UserEntity {
     @Column(nullable = false, length = 255)
     private String profilePicture;
 
+    @Column
+    private String profileText = "";
+
     @Column(nullable = false, length = 255)
     private String accessToken;
 }
