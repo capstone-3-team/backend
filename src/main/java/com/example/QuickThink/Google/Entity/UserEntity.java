@@ -40,7 +40,7 @@ public class UserEntity {
 
     @ElementCollection
     @MapKeyColumn(name="hashTag")
-    @Column(name="hashTagText")
+    @Column(name="hashTagCount")
     @CollectionTable(name="hashTags", joinColumns=@JoinColumn(name="id"))
     @Builder.Default
     private Map<String, Long> hashTags = new HashMap<>();
@@ -51,4 +51,25 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CardEntity> stones = new ArrayList<>();
+
+    public void addHashTag(String hashtag) {
+        if(hashTags.containsKey(hashtag)) {
+            hashTags.put(hashtag, hashTags.get(hashtag) + 1);
+        } else {
+            hashTags.put(hashtag, 1L);
+        }
+    }
+
+    public void removeHashTag(String hashtag) {
+        if(hashTags.containsKey(hashtag)) {
+            Long count = hashTags.get(hashtag);
+            if(count > 0) {
+                if(hashTags.get(hashtag) - 1 == 0) {
+                    hashTags.remove(hashtag);
+                } else {
+                    hashTags.put(hashtag, hashTags.get(hashtag) - 1);
+                }
+            }
+        }
+    }
 }

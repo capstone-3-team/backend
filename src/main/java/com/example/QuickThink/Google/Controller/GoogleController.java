@@ -1,17 +1,24 @@
 package com.example.QuickThink.Google.Controller;
 
-import com.example.QuickThink.Google.Dto.LoginResponseDto;
-import com.example.QuickThink.Google.Dto.TokenValidationDto;
+import com.example.QuickThink.Card.Dto.HashtagsDto;
+import com.example.QuickThink.Google.Dto.*;
+import com.example.QuickThink.Google.Entity.UserEntity;
 import com.example.QuickThink.Google.Exception.InvalidRedirect;
 import com.example.QuickThink.Google.Service.AccountService;
 import com.example.QuickThink.Google.Service.LoginService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class GoogleController {
     LoginService loginService;
     AccountService accountService;
@@ -34,9 +41,22 @@ public class GoogleController {
 
     // 콜백
     @GetMapping("/auth")
-    public ResponseEntity<LoginResponseDto> googleLogin(@RequestParam String code) {
+    public ResponseEntity<LoginResponseDto> googleLogin(@RequestParam String code, HttpServletResponse res) {
         LoginResponseDto loginResponseDto = loginService.getDto(code);
+
+        Cookie cookie = new Cookie("data",loginResponseDto.getToken());
+        cookie.setDomain("quickthink.online");
+        cookie.setMaxAge(2);
+        cookie.setPath("/login");
+        res.addCookie(cookie);
+
         return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/info")
+    ResponseEntity<LoginResponseDto> getTokenInfo(@RequestHeader("accessToken") String accessToken) {
+        UserEntity user = loginService.getUserByToken(accessToken);
+        return new ResponseEntity<>(LoginResponseDto.builder().token(accessToken).googleId(user.getGoogleId()).googleName(user.getGoogleName()).profilePicture(user.getProfilePicture()).build(), HttpStatus.OK);
     }
 
     // 토큰 검증
@@ -48,15 +68,33 @@ public class GoogleController {
 
     // 프로필 텍스트 내용 가져오기
     @GetMapping("/profile")
-    public ResponseEntity<String> getProfileText(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId) {
+    public ResponseEntity<ProfileDto> getProfileText(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId) {
         String profileText = accountService.getProfileText(accessToken, googleId);
-        return new ResponseEntity<>(profileText, HttpStatus.OK);
+        return new ResponseEntity<>(new ProfileDto(profileText), HttpStatus.OK);
     }
 
     // 프로필 텍스트 내용 수정하기
     @PostMapping("/profile")
-    public ResponseEntity<HttpStatus> changeProfileText(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId, @RequestBody String profileText) {
-        accountService.changeProfileText(accessToken, googleId, profileText);
+    public ResponseEntity<ProfileDto> changeProfileText(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId, @RequestBody ProfileDto profile) {
+        accountService.changeProfileText(accessToken, googleId, profile.getText());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/hashtags")
+    public ResponseEntity<HashtagsDto> getUserHashTags(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId) {
+        HashtagsDto hashTags = accountService.getUserHashTags(accessToken, googleId);
+        return new ResponseEntity<>(hashTags, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<UserListDto> searchUsers(@RequestHeader("accessToken") String accessToken, @RequestParam String searchName) {
+        UserListDto userListDto = accountService.searchUsers(accessToken, searchName);
+        return new ResponseEntity<>(userListDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/person")
+    public ResponseEntity<UserDto> searchUser(@RequestHeader("accessToken") String accessToken, @RequestParam String googleId) {
+        UserDto userDto = accountService.searchUser(accessToken, googleId);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }

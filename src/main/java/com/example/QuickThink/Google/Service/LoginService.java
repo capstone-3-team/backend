@@ -8,6 +8,7 @@ import com.example.QuickThink.Google.Exception.NotFoundException;
 import com.example.QuickThink.Google.Repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class LoginService {
 
     private final Environment env;
@@ -51,6 +53,8 @@ public class LoginService {
         params.put("client_id", clientId);
         params.put("redirect_uri", redirectUri);
 
+        log.info("redirect into {}", redirectUri);
+
         String parameterString = params.entrySet().stream()
                 .map(x -> x.getKey() + "=" + x.getValue())
                 .collect(Collectors.joining("&"));
@@ -72,12 +76,16 @@ public class LoginService {
         params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
 
+        log.info(authorizationCode);
+
         // 토큰을 받아옵니다.
         HttpHeaders tokenHeaders = new HttpHeaders();
         tokenHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity tokenEntity = new HttpEntity(params, tokenHeaders);
         ResponseEntity<JsonNode> tokenResponseNode = restTemplate.exchange(tokenUri, HttpMethod.POST, tokenEntity, JsonNode.class);
         JsonNode accessTokenNode = tokenResponseNode.getBody();
+
+        log.info(accessTokenNode.get("access_token").asText());
 
         // 받아온 토큰들을 통해 유저의 정보또한 받아옵니다.
         String resourceUri = env.getProperty("google.resource-uri");
@@ -115,7 +123,6 @@ public class LoginService {
      * @param accessToken
      * @return
      */
-    @Transactional
     public Boolean registration(String googleName, String googleId, String profilePicture, String accessToken) {
         // 유저를 가져온 후 있으면 갱신, 없으면 추가합니다.
         UserEntity user = userRepository.findByGoogleId(googleId);
@@ -134,6 +141,8 @@ public class LoginService {
             user.setAccessToken(accessToken);
             user.setGoogleId(googleId);
             user.setProfilePicture(profilePicture);
+            userRepository.save(user);
+            log.info(accessToken);
             return false;
         }
     }
