@@ -28,7 +28,7 @@ public class CardEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 65535)
     private String content;
 
     @Column(nullable = false)

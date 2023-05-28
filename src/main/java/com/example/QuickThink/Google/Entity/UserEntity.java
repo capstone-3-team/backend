@@ -61,15 +61,15 @@ public class UserEntity {
     }
 
     public void removeHashTag(String hashtag) {
-        if(hashTags.containsKey(hashtag)) {
-            Long count = hashTags.get(hashtag);
-            if(count > 0) {
-                if(hashTags.get(hashtag) - 1 == 0) {
-                    hashTags.remove(hashtag);
-                } else {
-                    hashTags.put(hashtag, hashTags.get(hashtag) - 1);
-                }
+    if(hashTags.containsKey(hashtag)) {
+        Long count = hashTags.get(hashtag);
+        if(count > 0) {
+            if(hashTags.get(hashtag) - 1 == 0) {
+                hashTags.remove(hashtag);
+            } else {
+                hashTags.put(hashtag, hashTags.get(hashtag) - 1);
             }
         }
     }
+}
 }

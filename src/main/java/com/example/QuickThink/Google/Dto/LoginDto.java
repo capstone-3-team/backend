@@ -10,10 +10,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoginResponseDto {
+public class LoginDto {
     private String token;
     private String googleName;
     private String googleId;
     private String profilePicture;
-    private Boolean firstLogin;
 }

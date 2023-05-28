@@ -11,6 +11,7 @@ import com.example.QuickThink.Google.Service.LoginService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -64,6 +65,7 @@ public class CardService {
         card.setContent(cardEditRequestDto.getContent());
         card.setHashTags(new HashSet<>(cardEditRequestDto.getHashTags()));
         card.setWrittenDate(cardEditRequestDto.getWrittenDate());
+        card.setLatestReviewDate(cardEditRequestDto.getWrittenDate());
 
         for(String hash : cardEditRequestDto.getHashTags()) {
             tokenUser.addHashTag(hash);
@@ -190,7 +192,7 @@ public class CardService {
         if(!card.getUser().getGoogleId().equals(tokenUser.getGoogleId())) {
             throw new InvalidAuthorization();
         }
-
+        card.setLatestReviewDate(LocalDateTime.now());
         card.setReviewCount(card.getReviewCount() + 1);
         cardRepository.save(card);
     }

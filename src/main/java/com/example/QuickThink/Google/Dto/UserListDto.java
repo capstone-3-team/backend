@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserListDto {
+    @Builder.Default
     List<UserDto> userList = new ArrayList<>();
     public void addUser(UserEntity user) {
         userList.add(

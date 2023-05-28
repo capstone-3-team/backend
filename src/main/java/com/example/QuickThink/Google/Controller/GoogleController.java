@@ -6,15 +6,11 @@ import com.example.QuickThink.Google.Entity.UserEntity;
 import com.example.QuickThink.Google.Exception.InvalidRedirect;
 import com.example.QuickThink.Google.Service.AccountService;
 import com.example.QuickThink.Google.Service.LoginService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -40,23 +36,16 @@ public class GoogleController {
     }
 
     // 콜백
-    @GetMapping("/auth")
-    public ResponseEntity<LoginResponseDto> googleLogin(@RequestParam String code, HttpServletResponse res) {
-        LoginResponseDto loginResponseDto = loginService.getDto(code);
-
-        Cookie cookie = new Cookie("data",loginResponseDto.getToken());
-        cookie.setDomain("quickthink.online");
-        cookie.setMaxAge(2);
-        cookie.setPath("/login");
-        res.addCookie(cookie);
-
-        return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
+    @PostMapping("/auth")
+    public ResponseEntity<HttpStatus> googleLogin(@RequestBody LoginDto loginDto) {
+        loginService.registration(loginDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/info")
-    ResponseEntity<LoginResponseDto> getTokenInfo(@RequestHeader("accessToken") String accessToken) {
+    ResponseEntity<LoginDto> getTokenInfo(@RequestHeader("accessToken") String accessToken) {
         UserEntity user = loginService.getUserByToken(accessToken);
-        return new ResponseEntity<>(LoginResponseDto.builder().token(accessToken).googleId(user.getGoogleId()).googleName(user.getGoogleName()).profilePicture(user.getProfilePicture()).build(), HttpStatus.OK);
+        return new ResponseEntity<>(LoginDto.builder().token(accessToken).googleId(user.getGoogleId()).googleName(user.getGoogleName()).profilePicture(user.getProfilePicture()).build(), HttpStatus.OK);
     }
 
     // 토큰 검증
