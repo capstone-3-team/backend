@@ -12,8 +12,10 @@ import java.util.HashSet;
 @Builder
 public class OtherCardResponseDto {
     private Long id;
+    private String title;
     private Boolean isYours;
     private String content;
     private HashSet<String> hashTags;
     private LocalDateTime writtenDate;
+    private String googleId;
 }

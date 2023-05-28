@@ -1,26 +1,22 @@
 package com.example.QuickThink.Card.Dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class CardWriteRequestDto {
+@AllArgsConstructor
+public class CardEditRequestDto {
     private String title;
-
     private String content;
-
     private List<String> hashTags;
-
     private LocalDateTime writtenDate;
 
-    private LocalDateTime latestReviewDate;
-
-    private Long reviewCount;
 }

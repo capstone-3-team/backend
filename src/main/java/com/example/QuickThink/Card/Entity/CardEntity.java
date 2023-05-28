@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,18 +28,18 @@ public class CardEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 65535)
     private String content;
 
     @Column(nullable = false)
     @Builder.Default
-    private Set<String> hashTags = new HashSet<>();
+    private HashSet<String> hashTags = new HashSet<>();
 
     @Column(nullable = false)
-    private Date writtenDate;
+    private LocalDateTime writtenDate;
 
     @Column(nullable = false)
-    private Date latestReviewDate;
+    private LocalDateTime latestReviewDate;
 
     @Column(nullable = false)
     private Long reviewCount;

@@ -2,18 +2,14 @@ package com.example.QuickThink.Google.Dto;
 
 import lombok.*;
 
-/**
- * 로그인 완료 이후 프론트엔드에 전송할 Dto
- */
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class LoginResponseDto {
-    private String token;
+public class UserDto {
     private String googleName;
     private String googleId;
     private String profilePicture;
-    private Boolean firstLogin;
+    private String profileText;
 }
