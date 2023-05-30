@@ -7,6 +7,7 @@ import com.example.QuickThink.Google.Exception.InvalidRedirect;
 import com.example.QuickThink.Google.Service.AccountService;
 import com.example.QuickThink.Google.Service.LoginService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class GoogleController {
 
     // 콜백
     @PostMapping("/auth")
-    public ResponseEntity<HttpStatus> googleLogin(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<HttpStatus> googleLogin(@RequestBody @Valid LoginDto loginDto) {
         loginService.registration(loginDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }

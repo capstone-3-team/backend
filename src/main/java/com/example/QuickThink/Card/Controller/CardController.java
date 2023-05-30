@@ -4,6 +4,7 @@ import com.example.QuickThink.Card.Dto.CardEditRequestDto;
 import com.example.QuickThink.Card.Dto.CardWriteRequestDto;
 import com.example.QuickThink.Card.Dto.HashtagsDto;
 import com.example.QuickThink.Card.Service.CardService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class CardController {
     }
 
     @PostMapping("/write")
-    public ResponseEntity<HttpStatus> postCard(@RequestHeader("accessToken") String accessToken, @RequestBody CardWriteRequestDto cardWriteRequestDto) {
+    public ResponseEntity<HttpStatus> postCard(@RequestHeader("accessToken") String accessToken, @RequestBody @Valid CardWriteRequestDto cardWriteRequestDto) {
         cardService.postCard(accessToken, cardWriteRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -50,7 +51,7 @@ public class CardController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<HttpStatus> editCard(@RequestHeader("accessToken") String accessToken, @RequestParam Long cardId, @RequestBody CardEditRequestDto cardEditRequestDto) {
+    public ResponseEntity<HttpStatus> editCard(@RequestHeader("accessToken") String accessToken, @RequestParam Long cardId, @RequestBody @Valid CardEditRequestDto cardEditRequestDto) {
         cardService.editCard(accessToken, cardId, cardEditRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }

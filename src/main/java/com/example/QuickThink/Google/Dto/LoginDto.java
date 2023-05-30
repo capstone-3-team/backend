@@ -1,5 +1,6 @@
 package com.example.QuickThink.Google.Dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 /**
@@ -11,8 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class LoginDto {
+    @NotEmpty
     private String token;
+    @NotEmpty
     private String googleName;
+    @NotEmpty
     private String googleId;
+    @NotEmpty
     private String profilePicture;
 }
